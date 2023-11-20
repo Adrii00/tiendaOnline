@@ -34,16 +34,16 @@
                 }
             }
         }
-
+        //Validacion de contraseña 
         if (strlen($temp_contrasena) == 0) {
-            $err_contrasena = "La contraseña es obligatorio";
+            $err_contrasena = "La contraseña es obligatoria";
         } else {
-            if (strlen($temp_contrasena) > 255 || strlen($temp_contrasena) < 4) {
-                $err_contrasena = "La contraseña debe tener minimo 4 caracteres y maximo 255";
+            if (strlen($temp_contrasena) > 20 || strlen($temp_contrasena) < 4) {
+                $err_contrasena = "La contraseña debe tener minimo 4 caracteres y maximo 20";
             } else {
-                $patron = "/^[A-Za-z0-9]{4,255}$/";
+                $patron = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).{8,20}$";
                 if (!preg_match($patron, $temp_contrasena)) {
-                    $err_contrasena = "La contraseña solo pude contener letras o numeros";
+                    $err_contrasena = "La contraseña debe tener mínimo un carácter en minúscula, uno en mayúscula, un número y un carácter especial";
                 } else {
                     $contrasena = $temp_contrasena;
                     $contrasena_cifrada = password_hash($contrasena, PASSWORD_DEFAULT);

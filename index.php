@@ -69,6 +69,9 @@
             foreach ($productos as $producto) { ?>
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
                     <div class="product-item bg-light mb-4">
+                        <?php
+                        if ($producto->cantidad > 0) {
+                            ?>
                         <div class="product-img position-relative overflow-hidden">
                             <img class="img-fluid w-100" src="<?php echo $producto->imagen ?>" alt="">
                             <div class="product-action">
@@ -97,6 +100,32 @@
                                 </h5>
                             </div>
                         </div>
+                        <?php  # code...
+                        }else {
+                            ?>
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src="<?php echo $producto->imagen ?>" alt="">
+                            <div class="product-action">
+                                <?php
+                                    if ($rol=="admin") {
+                                        ?>
+                                        <a class="btn btn-outline-dark btn-square" href="util/eliminar_producto.php?id=<?php echo $producto->idProducto ?>">
+                                            <img src="img/iconos/icono_eliminar.gif" alt="" class="img-fluid w-100" >
+                                            </a>
+                                <?php
+                                
+                                    }
+                                    ?>
+                            </div>
+                        </div>
+                        <div class="text-center py-4">
+                            <div class="d-flex bg-danger align-items-center justify-content-center mt-2">
+                                <h5>Producto agotado</h5>
+                            </div>
+                        </div>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </div>
                 <?php

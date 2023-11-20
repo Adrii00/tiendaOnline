@@ -144,10 +144,9 @@
     <?php
     } else {
     ?>
-        <div class="container alert alert-danger mt-3" role="alert">
-            <h1>Acceso denegado</h1>
-            <p>No tienes permisos para acceder a esta página</p>
-        </div>
+        <div class="container">
+            <h4 class="alert bg-danger">No tienes permisos para acceder aqui</h4>
+            </div>
     <?php
     }
     ?>
