@@ -12,7 +12,6 @@
         crossorigin="anonymous"></script>
     <?php require './database.php'; ?>
     <?php require 'Objetos/producto.php'; ?>
-    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -72,58 +71,60 @@
                         <?php
                         if ($producto->cantidad > 0) {
                             ?>
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="<?php echo $producto->imagen ?>" alt="">
-                            <div class="product-action">
-                                <?php
-                                    if ($rol=="admin") {
+                            <div class="product-img position-relative overflow-hidden">
+                                <img class="img-fluid w-100" src="<?php echo $producto->imagen ?>" alt="">
+                                <div class="product-action">
+                                    <?php
+                                    if ($rol == "admin") {
                                         ?>
-                                        <a class="btn btn-outline-dark btn-square" href="util/eliminar_producto.php?id=<?php echo $producto->idProducto ?>">
-                                            <img src="img/iconos/icono_eliminar.gif" alt="" class="img-fluid w-100" >
-                                            </a>
-                                <?php
-                                
+                                        <a class="btn btn-outline-dark btn-square"
+                                            href="util/eliminar_producto.php?id=<?php echo $producto->idProducto ?>">
+                                            <img src="img/iconos/icono_eliminar.gif" alt="" class="img-fluid w-100">
+                                        </a>
+                                        <?php
+
                                     }
                                     ?>
-                                <a class="btn btn-outline-light btn-square" href="">
-                                    <img src="img/iconos/icono_carrito.gif" alt="" class=" img-fluid w-75" >
+                                    <a class="btn btn-outline-light btn-square" href="">
+                                        <img src="img/iconos/icono_carrito.gif" alt="" class=" img-fluid w-75">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-center py-4">
+                                <a class="h6 text-decoration-none text-truncate" href="">
+                                    <?php echo $producto->nombreProducto ?>
                                 </a>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <h5>
+                                        <?php echo $producto->precio . " €" ?>
+                                    </h5>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="">
-                                <?php echo $producto->nombreProducto ?>
-                            </a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>
-                                    <?php echo $producto->precio . " €" ?>
-                                </h5>
-                            </div>
-                        </div>
                         <?php  # code...
-                        }else {
+                        } else {
                             ?>
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="<?php echo $producto->imagen ?>" alt="">
-                            <div class="product-action">
-                                <?php
-                                    if ($rol=="admin") {
+                            <div class="product-img position-relative overflow-hidden">
+                                <img class="img-fluid w-100" src="<?php echo $producto->imagen ?>" alt="">
+                                <div class="product-action">
+                                    <?php
+                                    if ($rol == "admin") {
                                         ?>
-                                        <a class="btn btn-outline-dark btn-square" href="util/eliminar_producto.php?id=<?php echo $producto->idProducto ?>">
-                                            <img src="img/iconos/icono_eliminar.gif" alt="" class="img-fluid w-100" >
-                                            </a>
-                                <?php
-                                
+                                        <a class="btn btn-outline-dark btn-square"
+                                            href="util/eliminar_producto.php?id=<?php echo $producto->idProducto ?>">
+                                            <img src="img/iconos/icono_eliminar.gif" alt="" class="img-fluid w-100">
+                                        </a>
+                                        <?php
+
                                     }
                                     ?>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <div class="d-flex bg-danger align-items-center justify-content-center mt-2">
-                                <h5>Producto agotado</h5>
+                            <div class="text-center py-4">
+                                <div class="d-flex bg-danger align-items-center justify-content-center mt-2">
+                                    <h5>Producto agotado</h5>
+                                </div>
                             </div>
-                        </div>
-                        <?php
+                            <?php
                         }
                         ?>
                     </div>

@@ -5,11 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de usuarios</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
     <?php require './database.php'; ?>
     <?php require 'Objetos/usuario.php'; ?>
-    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -41,7 +43,7 @@
     require 'util/nav.php';
 
     if ($rol == "admin") {
-    ?>
+        ?>
         <div class="container">
             <h1>Listado de usuarios</h1>
             <table class="table table-striped table-hover table-bordered border-danger">
@@ -52,9 +54,9 @@
                         <th>Rol</th>
                         <?php
                         if ($rol == "admin") {
-                        ?>
+                            ?>
                             <th>Acciones</th>
-                        <?php
+                            <?php
                         }
                         ?>
                     </tr>
@@ -68,18 +70,18 @@
                         echo "<td>" . $usuario->rol . "</td>";
 
                         if ($rol == "admin") {
-                    ?>
+                            ?>
                             <td>
                                 <?php
                                 if ($usuario->rol != "admin") {
-                                ?>
+                                    ?>
                                     <a class="btn btn-danger" href="util/eliminar_usuario.php?id=<?php echo $usuario->usuario ?>">
                                         Eliminar
-                                    <?php
+                                        <?php
                                 }
-                                    ?>
+                                ?>
                             </td>
-                    <?php
+                            <?php
                         }
                         echo "</tr>";
                     }
@@ -87,14 +89,14 @@
                 </tbody>
             </table>
         </div>
-    <?php
+        <?php
     } else {
-    ?>
-        <div class="container alert alert-danger mt-3" role="alert">
-            <h1>Acceso denegado</h1>
-            <p>No tienes permisos para acceder a esta página</p>
+        ?>
+        
+        <div class="container">
+            <h4 class="alert bg-danger">No tienes permisos para acceder aqui</h4>
         </div>
-    <?php
+        <?php
     }
     ?>
 </body>
