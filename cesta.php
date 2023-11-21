@@ -26,21 +26,30 @@
         $usuario = $_SESSION["usuario"];
         $rol = $_SESSION["rol"];
     }
-
-    // comprobar si el usuario ha sido eliminado
-    $res = mysqli_query($conexion, "select usuario from usuarios where usuario = '$usuario'");
-    if (mysqli_num_rows($res) == 0) {
-        session_destroy();
-    }
-
-
-    $sql = "SELECT * from productos";
+    // Mostramos el navbar
+    require 'util/nav.php';
+    // Mostrar productos en la cesta
+    $sql = "SELECT pc.idProducto, p.nombreProducto, p.precio, p.descripcion, pc.cantidad, p.imagen FROM productos_cestas pc JOIN productos p ON pc.idProducto = p.idProducto WHERE pc.idCesta = (SELECT idCesta FROM cestas WHERE usuario = '$usuario')";
     $resultado = $conexion->query($sql);
-    $productos = [];
 
+    $sql = "SELECT idProducto,cantidad from productos_cestas where idCesta = (Select idCesta from usuarios where usuario = '$usuario')";
+    $precio1 = $conexion->query($sql);
+    $precioCestaTotal = 0;
+    while ($fila = $precio1->fetch_assoc()) {
+        $idProductoActual = $fila["idProducto"];
+        $cantidadProvisional = $fila["cantidad"];
+        $sql = "SELECT precio from productos where idProducto=$idProductoActual";
+        $precioUd = ($conexion->query($sql))->fetch_assoc()['precio'];
+        $precioCestaTotal = $precioCestaTotal + ($precioUd * $cantidadProvisional);
+    }
+    $sql = "UPDATE cestas set precioTotal = $precioCestaTotal where idCesta = (Select idCesta from usuarios where usuario = '$usuario')";
+    $conexion->query($sql);
 
+    $sql = "SELECT precioTotal from cestas where usuario = '$usuario'";
+    $precioTotal = $conexion->query($sql)->fetch_assoc()["precioTotal"];
+    $productosCesta = [];
     while ($fila = $resultado->fetch_assoc()) {
-        $nuevo_producto = new Producto(
+        $nuevo_productoCesta = new Producto(
             $fila["idProducto"],
             $fila["nombreProducto"],
             $fila["precio"],
@@ -48,10 +57,79 @@
             $fila["cantidad"],
             $fila["imagen"]
         );
-        array_push($productos, $nuevo_producto);
+        array_push($productosCesta, $nuevo_productoCesta);
     }
     ?>
+    <!-- Contenido de la página -->
+    <h2 class="mb-5 text-center">Mi cesta</h2>
+    <div class="container text-center">
+        <?php
+        if (count($productosCesta) == 0) {
+            echo "<h4>No hay productos actualmente</h4>";
+        } else {
+            ?>
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="table-success">
+                    <tr>
+                        <th></th>
+                        <th>Nombre</th>
+                        <th>Descripcion</th>
+                        <th>Cantidad</th>
+                        <th>Precio ud</th>
+                        <th>Precio total</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-    <?php
-    require 'util/nav.php';
-    ?>
+                    <?php
+                    foreach ($productosCesta as $producto) {
+                        ?>
+                        <tr class="bg-dark">
+                            <td><img style="width: 100px" src="<?php echo $producto->imagen ?>" alt="Foto"></td>
+                            <td>
+                                <?php echo $producto->nombreProducto ?>
+                            </td>
+                            <td>
+                                <?php echo $producto->descripcion ?>
+                            </td>
+                            <td>
+                                <?php echo $producto->cantidad ?>
+                            </td>
+                            <td>
+                                <?php echo $producto->precio ?>€
+                            </td>
+                            <td>
+                                <?php echo $producto->precio * $producto->cantidad ?>€
+                            </td>
+                            <td>
+                                <form action="eliminar_productocesta.php" method="post">
+                                    <input type="hidden" name="location" value="cesta">
+                                    <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
+                                    <button class="btn btn-danger" type="submit">Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <?php
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <div class="container bg-dark w-35 float-end text-light">
+                <div class="row row-cols-2 h-100 p-2">
+                    <p class="text-start fs-5 my-auto">Precio total:
+                        <?php echo $precioTotal ?>€
+                    </p>
+                    <form class="text-end my-auto" action="" method="post">
+                        <input class="btn btn-success" type="submit" value="Realizar pedido">
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+        <?php
+        }
+        ?>
+    </div>

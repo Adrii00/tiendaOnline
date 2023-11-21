@@ -48,7 +48,99 @@
             $fila[5]
         );
     }
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $usuario = $_SESSION["usuario"];
+        if (isset($_POST["cantidad"])) {
+            $cantidadSeleccionada = $_POST["cantidad"];
+        }
+        // Obtengo el idCestas y la cantidad del usuario actual
+        $sql = "SELECT idCesta FROM cestas WHERE usuario = '$usuario'";
+        $resultadoCestas = $conexion->query($sql);
+
+        if ($resultadoCestas->num_rows > 0) {
+            $filaCestas = $resultadoCestas->fetch_assoc();
+            $idCesta = $filaCestas["idCesta"];
+
+            // Verifico si el producto ya está en la cesta
+            $sql =
+                "SELECT idProducto, cantidad FROM productos_cestas WHERE idCesta = '$idCesta' AND idProducto = '$idProducto'";
+            $resultadoProductoExistente = $conexion->query($sql);
+
+            if ($resultadoProductoExistente->num_rows > 0) {
+                // Si el producto ya está en la cesta, actualizo la cantidad
+                $filaProductoExistente = $resultadoProductoExistente->fetch_assoc();
+                $cantidadExistente = $filaProductoExistente["cantidad"];
+                $nuevaCantidad = $cantidadExistente + $cantidadSeleccionada;
+
+                // Obtengo la cantidad disponible del producto
+                $sql = "SELECT cantidad FROM productos WHERE idProducto = '$idProducto'";
+                $resultadoCantidadProducto = $conexion->query($sql);
+
+                if ($resultadoCantidadProducto->num_rows > 0) {
+                    $filaCantidadProducto = $resultadoCantidadProducto->fetch_assoc();
+                    $cantidadDisponible = $filaCantidadProducto["cantidad"];
+
+                    // Verifico si hay suficiente cantidad disponible
+                    if ($cantidadDisponible >= $cantidadSeleccionada && $cantidadSeleccionada > 0) {
+
+                        // Actualizo la cantidad en la tabla productos_Cestas
+                        $sql = "UPDATE productos_cestas SET cantidad = '$nuevaCantidad' WHERE idCesta = '$idCesta' AND idProducto = '$idProducto'";
+                        $conexion->query($sql);
+
+                        // Actualizo la cantidad disponible en la tabla productos
+                        $sqlActualizarCantidadProducto = "UPDATE productos SET cantidad = cantidad - '$cantidadSeleccionada' WHERE idProducto = '$idProducto'";
+                        $conexion->query($sqlActualizarCantidadProducto);
+                        
+
+                        $mensajeExito = "Producto añadido a la cesta!!";
+                    } else {
+                        // No hay suficiente cantidad disponible, muestra un mensaje de error
+                        $mensajeError = "No hay suficiente stock por el momento Gomen'nasai!!!";
+                    }
+                } else {
+                    // No se pudo obtener la cantidad del producto, muestra un mensaje de error
+                    $mensajeError = "Error al obtener la cantidad del producto.";
+                }
+
+            } else {
+                // Si el producto no está en la cesta, inserto un nuevo registro
+                $sql =
+                    "INSERT INTO productos_cestas (idCesta, idProducto, cantidad) VALUES ('$idCesta', '$idProducto', '$cantidadSeleccionada')";
+                $conexion->query($sql);
+
+                // Obtengo la cantidad disponible del producto
+                $sqlCantidadProducto = "SELECT cantidad FROM productos WHERE idProducto = '$idProducto'";
+                $resultadoCantidadProducto = $conexion->query($sqlCantidadProducto);
+
+                if ($resultadoCantidadProducto->num_rows > 0) {
+                    $filaCantidadProducto = $resultadoCantidadProducto->fetch_assoc();
+                    $cantidadDisponible = $filaCantidadProducto["cantidad"];
+
+                    // Verifico si hay suficiente cantidad disponible
+                    if ($cantidadDisponible >= $cantidadSeleccionada && $cantidadSeleccionada > 0) {
+
+                        // Actualizo la cantidad disponible en la tabla productos
+                        $sql = "UPDATE productos SET cantidad = cantidad - '$cantidadSeleccionada' WHERE idProducto = '$idProducto'";
+                        $conexion->query($sql);
+
+                    $conexion->query($sql);
+
+                        $mensajeExito = "Producto añadido a la cesta!!";
+                    } else {
+                        // No hay suficiente cantidad disponible, muestra un mensaje de error
+                        $mensajeError = "No hay suficiente stock por el momento Gomen'nasai!!!";
+                    }
+                } else {
+                    // No se pudo obtener la cantidad del producto, muestra un mensaje de error
+                    $mensajeError = "Error al obtener la cantidad del producto.";
+                }
+            }
+        } else {
+            $mensajeError = "Producto no añadido a la cesta, Error!";
+        }
+    }
     ?>
+
     <div class="container-sm w-30 mt-4">
         <div class="product-item bg-light mb-4">
             <div class="product-img position-relative overflow-hidden">
@@ -69,12 +161,12 @@
                         <label>Seleccione cantidad</label>
                         <select name="cantidad" id="">
                             <?php
-                            for ($i=0;($i<=5)&&($i <= $producto->cantidad) ; $i++) { 
+                            for ($i = 1; ($i <= 5) && ($i <= $producto->cantidad); $i++) {
                                 echo "<option value=\"$i\">$i</option>";
                             }
                             ?>
                         </select>
-                        <input type="submit" value="Comprar">
+                        <input type="submit" name="aniadir" value="Añadir a cesta">
                     </form>
                 </div>
             </div>
