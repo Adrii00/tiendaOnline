@@ -85,9 +85,7 @@
 
                                     }
                                     ?>
-                                    <a class="btn btn-outline-light btn-square" href="">
-                                        <img src="img/iconos/icono_carrito.gif" alt="" class=" img-fluid w-75">
-                                    </a>
+                                    <a class="btn btn-outline-light btn-square bg-success" href="producto.php?id=<?php echo $producto->idProducto ?>"> Comprar </a>
                                 </div>
                             </div>
                             <div class="text-center py-4">
